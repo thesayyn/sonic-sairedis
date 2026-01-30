@@ -8,19 +8,15 @@ AM_CXXFLAGS = [] # $(SAIINC) -I$(top_srcdir)/lib
 cc_library(
   name = "saimetadata",
   srcs = [
-    "//SAI/meta:saimetadata.c",
-    "//SAI/meta:saimetadatautils.c",
-    "//SAI/meta:saiserialize.c",
-    "//SAI/meta:deps",
+    "@sai//meta:saimetadata.c",
+    "@sai//meta:saimetadatautils.c",
+    "@sai//meta:saiserialize.c",
+    "@sai//meta:deps",
   ],
-  hdrs = [
-    "//SAI/meta:all_headers",
-  ],
-  includes = [
-    "../SAI/inc",
-    "../SAI/meta",
-    "../SAI/experimental",
-    "../SAI/custom",
+  deps = [
+    "@sai//meta:header_lib",
+    "@sai//inc:header_lib",
+    "@sai//experimental:header_lib",
   ],
   cxxopts = CODE_COVERAGE_CPPFLAGS,
   copts = DBGFLAGS + AM_CFLAGS + ["-ansi"] + CODE_COVERAGE_CFLAGS,

@@ -6,26 +6,6 @@ bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "bazel_lib", version = "3.1.1")
 bazel_dep(name = "rules_doxygen", version = "2.6.1")
 
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-# rules_doxygen can pull releases from GitHub, but 1.8.16 is too old to be there.
-# We need to fetch it from sourceforge.
-http_archive(
-  name = "doxygen_release",
-  urls = ["https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.linux.bin.tar.gz/download"],
-  sha256 = "610697eba6104110389d371e6908ed35b4b00f9e650c969a213dc0020b067a55",
-  type = "tar.gz",
-  strip_prefix = "doxygen-1.8.16",
-  build_file_content = 'exports_files(["bin/doxygen"], ["//visibility:public"])',
-)
-
-doxygen_extension = use_extension("@rules_doxygen//:extensions.bzl", "doxygen_extension")
-doxygen_extension.configuration(
-  executable = "@doxygen_release//:bin/doxygen",
-  platform = "linux",
-)
-use_repo(doxygen_extension, "doxygen")
-
 bazel_dep(name = "sonic-build-infra", version = "0.0.0")
 local_path_override(
     module_name = "sonic-build-infra",
@@ -62,6 +42,12 @@ local_path_override(
     path = "../../sonic-net/sonic-swss-common",
 )
 
+bazel_dep(name = "sai", version = "0.0.0")
+local_path_override(
+  module_name = "sai",
+  path = "./SAI",
+)
+
 apt.install(
     dependency_set = "bookworm",
     suites = ["bookworm", "bookworm-updates"],
@@ -73,11 +59,6 @@ apt.install(
         "libboost-dev",
         "libboost-serialization-dev",
         "nlohmann-json3-dev",
-        
-        # For SAI
-        "doxygen",
-        "graphviz",
-        "aspell",
     ]
 )
 
