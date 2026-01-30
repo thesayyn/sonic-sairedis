@@ -1,10 +1,8 @@
 module(name = "sonic-sairedis")
 
-bazel_dep(name = "rules_perl", version = "0.5.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "bazel_lib", version = "3.1.1")
-bazel_dep(name = "rules_doxygen", version = "2.6.1")
 
 bazel_dep(name = "sonic-build-infra", version = "0.0.0")
 local_path_override(

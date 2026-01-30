@@ -1,6 +1,5 @@
 package(default_visibility = ["//visibility:public"]) #TODO BL: This is probably too much visibility
 
-load("@rules_perl//perl:perl.bzl", "perl_binary")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@bazel_lib//lib:run_binary.bzl", "run_binary")
 load("@bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
@@ -12,11 +11,6 @@ copy_to_directory(
   out = "swss",
   root_paths = ["common"],
   include_external_repositories = ["*"],
-)
-
-perl_binary(
-  name = "stub",
-  srcs = ["stub.pl"],
 )
 
 sh_binary(
@@ -39,7 +33,7 @@ write_source_file(
     diff_test_failure_message = "Bazel config header (config.bazel.h) out of date; please run {{TARGET}} to update."
 )
 
-# TODO BL: This depends on having run `bazel run //:config.h.update`.
+# TODO BL: This depends on having run `bazel run //:config.bazel.h.update`.
 # We should encode that invariant.
 filegroup(
   name = "config",
