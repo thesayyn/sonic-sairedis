@@ -1,4 +1,12 @@
-CXXFLAGS_COMMON = [
+# CXXFLAGS that we need for Bazel specifically. Not present in the Makefile
+CXXFLAGS_COMMON_BAZEL = [
+  # TODO BL: rules_distroless introduces a bunch of include directories that don't exist
+  # so we need to disable that warning or else -Werror will fail the build.
+  "-Wno-missing-include-dirs",
+]
+
+# CXXFLAGS from the Makefile
+CXXFLAGS_COMMON_MAKEFILE = [
   "-ansi",
   "-fPIC",
   "-pipe",
@@ -8,8 +16,7 @@ CXXFLAGS_COMMON = [
   "-Wcast-qual",
   "-Wconversion",
   "-Wdisabled-optimization",
-  # TODO BL: Re-enable this if and when we remove all the errors
-  # "-Werror",
+  "-Werror",
   "-Wextra",
   "-Wfloat-equal",
   "-Wformat=2",
@@ -44,6 +51,8 @@ CXXFLAGS_COMMON = [
   "-Wconversion",
   "-Wno-psabi",
 ]
+
+CXXFLAGS_COMMON = CXXFLAGS_COMMON_MAKEFILE + CXXFLAGS_COMMON_BAZEL
 
 # TODO BL: Figure out where to get these.
 CODE_COVERAGE_CFLAGS = []

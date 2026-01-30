@@ -15,8 +15,7 @@ CFLAGS_COMMON = [
    "-Wcast-qual",
    "-Wconversion",
    "-Wdisabled-optimization",
-   # TODO BL: Re-enable this if and when we remove all the errors
-   # "-Werror",
+   "-Werror",
    "-Wextra",
    "-Wfloat-equal",
    "-Wformat=2",
