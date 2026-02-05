@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@tar.bzl", "tar")
 load("@bazel_lib//lib:run_binary.bzl", "run_binary")
 load("//:common.bzl", "CXXFLAGS_COMMON", "CODE_COVERAGE_CPPFLAGS", "CODE_COVERAGE_CXXFLAGS", "DBGFLAGS", "CODE_COVERAGE_LIBS")
 
@@ -54,7 +55,7 @@ cc_library(
 )
 
 cc_library(
-  name = "sairedis",
+  name = "libsairedis",
   srcs = [
     "sai_redis_acl.cpp",
     "sai_redis_bfd.cpp",
@@ -127,10 +128,32 @@ cc_library(
   copts = DBGFLAGS + AM_CXXFLAGS + CXXFLAGS_COMMON + CODE_COVERAGE_CXXFLAGS,
 )
 
+cc_binary(
+  name = "sairedis",
+  deps = [
+    ":libsairedis",
+  ],
+  linkstatic = 1,
+  linkshared = 1,
+)
+
+tar(
+  name = "libsairedis_dev_pkg",
+  srcs = [
+    ":sairedis",
+    ":sairedis.h",
+  ],
+  mtree = [
+    "./lib/sairedis.h type=file contents=$(location :sairedis.h)",
+    "./usr/lib/x86_64-linux-gnu/libsairedis.so type=file contents=$(location :sairedis)",
+    "./usr/lib/x86_64-linux-gnu/libsairedis.so.0 type=link link=$(location :sairedis)",
+  ]
+)
+
 cc_test(
   name = "tests",
   srcs = ["tests.cpp"],
-  deps = [":sairedis"],
+  deps = [":libsairedis"],
   copts = DBGFLAGS + AM_CXXFLAGS + CXXFLAGS_COMMON,
 )
 

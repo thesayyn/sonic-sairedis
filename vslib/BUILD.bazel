@@ -124,7 +124,7 @@ cc_library(
     "@bookworm//nlohmann-json3-dev:nlohmann-json3",
     "//meta:libsaimeta",
     "//meta:libsaimetadata",
-    "//lib:sairedis",
+    "//lib:libsairedis",
   ],
   cxxopts = CODE_COVERAGE_CPPFLAGS,
   copts = DBGFLAGS + AM_CXXFLAGS + CXXFLAGS_COMMON + CODE_COVERAGE_CPPFLAGS,
