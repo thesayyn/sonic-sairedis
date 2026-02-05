@@ -8,6 +8,7 @@
 					"/bookworm/graphviz:amd64": "2.42.2-7+deb12u1",
 					"/bookworm/libboost-dev:amd64": "1.74.0.3",
 					"/bookworm/libboost-serialization-dev:amd64": "1.74.0.3",
+					"/bookworm/libboost-serialization1.74-dev:amd64": "1.74.0+ds1-21",
 					"/bookworm/libc6-dev:amd64": "2.36-9+deb12u13",
 					"/bookworm/libgcc-12-dev:amd64": "12.2.0-14+deb12u1",
 					"/bookworm/libhiredis-dev:amd64": "0.14.1-3",

@@ -1,12 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@tar.bzl", "tar", "mutate")
+load("@bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("//:common.bzl", "CODE_COVERAGE_CPPFLAGS", "CODE_COVERAGE_CXXFLAGS", "CODE_COVERAGE_CFLAGS", "DBGFLAGS", "CODE_COVERAGE_LIBS", "CXXFLAGS_COMMON")
 
 AM_CFLAGS = [] # $(SAIINC)
 AM_CXXFLAGS = [] # $(SAIINC) -I$(top_srcdir)/lib
 
 cc_library(
-  name = "saimetadata",
+  name = "libsaimetadata",
   srcs = [
     "@sai//meta:saimetadata.c",
     "@sai//meta:saimetadatautils.c",
@@ -28,7 +30,7 @@ filegroup(
 )
 
 cc_library(
-  name = "saimeta",
+  name = "libsaimeta",
   srcs = [
     "AttrKeyMap.cpp",
     "Globals.cpp",
@@ -77,9 +79,73 @@ cc_library(
   deps = [
     "@bookworm//libhiredis-dev:libhiredis",
     "@sonic_swss_common//:libswsscommon",
-    ":saimetadata",
+    ":libsaimetadata",
   ] + CODE_COVERAGE_LIBS,
   cxxopts = CODE_COVERAGE_CPPFLAGS,
   copts = DBGFLAGS + AM_CXXFLAGS + CXXFLAGS_COMMON + CODE_COVERAGE_CXXFLAGS,
 )
 
+filegroup(
+  name = "deb_headers",
+  srcs = glob([
+    "sai*.h",
+    "Sai*.h",
+  ]),
+)
+
+
+cc_binary(
+  name = "saimetadata",
+  deps = [
+    ":libsaimetadata",
+  ],
+  linkstatic = 1,
+  linkshared = 1,
+)
+
+cc_binary(
+  name = "saimeta",
+  deps = [
+    ":libsaimeta",
+  ],
+  linkstatic = 1,
+  linkshared = 1,
+)
+
+# TODO BL: Because we don't want to name all the headers one by one in the mtree,
+#          we create a directory at the right path.
+# meta/sai*.h usr/include/sai
+# meta/Sai*.h usr/include/sai
+# SAI/meta/sai*.h usr/include/sai
+copy_to_directory(
+  name = "deb_headers_directory",
+  out = "usr/include/sai",
+  srcs = [
+    ":deb_headers",
+    "@sai//meta:deb_headers",
+  ],
+  include_external_repositories = ["sai*"],
+)
+
+# usr/lib/*/libsaimetadata.so
+# usr/lib/*/libsaimeta.so
+copy_to_directory(
+  name = "deb_libs_directory",
+  # TODO BL: parameterize based on target triple
+  out = "usr/lib/x86_64-linux-gnu",
+  srcs = [
+    ":saimetadata",
+    ":saimeta",
+  ],
+)
+
+# TODO BL: we can probably break this down, but this is straight from debian/libsaimetadatata-dev.install
+# TODO BL: We may need to also do the files in `debian/libsaimetadata-dev.links`, which create symlinks to .0
+tar(
+  name = "libsaimetadata_dev_pkg",
+  srcs = [
+    ":deb_headers_directory",
+    ":deb_libs_directory",
+  ],
+  mutate = mutate(strip_prefix = package_name()),
+)
