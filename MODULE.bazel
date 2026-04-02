@@ -1,6 +1,7 @@
 # Keep bazel_compatibility in sync with sonic-buildimage's .bazelversion.
 module(
     name = "sonic-sairedis",
+    version = "0.0.0",
     bazel_compatibility = [">=8.5.1", "<=8.5.1"],
 )
 
@@ -12,10 +13,6 @@ bazel_dep(name = "bazel_lib", version = "3.1.1")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 bazel_dep(name = "tar.bzl", version = "0.8.1")
 bazel_dep(name = "sonic-build-infra", version = "0.0.0", repo_name = "sonic_build_infra")
-local_path_override(
-    module_name = "sonic-build-infra",
-    path = "../sonic-build-infra",
-)
 
 register_toolchains("@sonic_build_infra//toolchains/gcc:host_gcc_toolchain")
 
@@ -51,16 +48,8 @@ apt.sources_list(
 )
 
 bazel_dep(name = "sonic-swss-common", version = "0.0.0", repo_name = "sonic_swss_common")
-local_path_override(
-    module_name = "sonic-swss-common",
-    path = "../sonic-swss-common",
-)
 
 bazel_dep(name = "libnl3", version = "3.7.0")
-local_path_override(
-    module_name = "libnl3",
-    path = "../libnl3",
-)
 
 # TODO(bazel-ready): replace with new version of rules_m4 when this merges:
 #  https://github.com/jmillikin/rules_m4/pull/23
