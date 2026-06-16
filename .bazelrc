@@ -3,5 +3,5 @@ common --registry=file://%workspace%/../../tools/bazel/registry
 common --registry=https://bcr.bazel.build
 
 build:stamp --stamp
-build:stamp --workspace_status_command="/home/blorente/code/github.com/sonic-net/sonic-sairedis/stamp_vars.sh"
+build:stamp --workspace_status_command="./stamp_vars.sh"
 build --config=stamp
